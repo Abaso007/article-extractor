@@ -2,6 +2,11 @@
 
 import { isArray, isObject, isString } from '@pwshub/bellajs'
 
+/**
+ * Allowed JSON-LD schema types that indicate an article or webpage.
+ *
+ * @type {string[]}
+ */
 const typeSchemas = [
   'aboutpage',
   'checkoutpage',
@@ -31,6 +36,11 @@ const typeSchemas = [
   'medicalscholarlyarticle',
 ]
 
+/**
+ * Mapping from entry keys to JSON-LD attribute names.
+ *
+ * @type {Object<string, string>}
+ */
 const attributeLists = {
   description: 'description',
   image: 'image',
@@ -39,6 +49,12 @@ const attributeLists = {
   type: '@type',
 }
 
+/**
+ * Safely parse a JSON string, returning an empty object on failure.
+ *
+ * @param {string} text - JSON string to parse
+ * @returns {Object} Parsed object or empty object
+ */
 const parseJson = (text) => {
   try {
     return JSON.parse(text)
@@ -47,6 +63,12 @@ const parseJson = (text) => {
   }
 }
 
+/**
+ * Check if the given JSON-LD object has an allowed schema type.
+ *
+ * @param {Object} ldJson - Parsed JSON-LD object
+ * @returns {boolean} True if type is in the allowed list
+ */
 const isAllowedLdJsonType = (ldJson) => {
   const rootLdJsonType = ldJson['@type'] || ''
   const arr = isArray(rootLdJsonType) ? rootLdJsonType : [rootLdJsonType]
@@ -67,9 +89,9 @@ export default (document, entry) => {
   ldSchemas.forEach(ldSchema => {
     const ldJson = parseJson(ldSchema.textContent.replace(/[\n\r\t]/g, ''))
     if (ldJson && isAllowedLdJsonType(ldJson)) {
-      Object.entries(attributeLists).forEach(([key, attr]) => {
+      for (const [key, attr] of Object.entries(attributeLists)) {
         if (!entry[key] || !ldJson[attr]) {
-          return
+          continue
         }
 
         const keyValue = ldJson[attr]
@@ -77,7 +99,7 @@ export default (document, entry) => {
         if (isString(val) && val !== '') {
           entry[key] = val.trim()
         }
-      })
+      }
     }
   })
 

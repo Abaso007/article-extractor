@@ -31,12 +31,32 @@ import extractWithReadability, {
 
 import { execPreParser, execPostParser } from './transformation.js'
 
+/**
+ * Build article description from meta description or text content.
+ *
+ * @param {Object} params
+ * @param {string} params.desc - Meta description
+ * @param {string} params.text - Stripped text content
+ * @param {number} params.threshold - Min length to use meta description
+ * @param {number} params.maxlen - Max chars for truncated description
+ * @returns {string} Final description string
+ */
 const summarize = ({ desc, text, threshold, maxlen }) => {
   return desc.length > threshold
     ? desc
     : truncateByChar(text, maxlen).replace(/\n/g, ' ')
 }
 
+/**
+ * Parse HTML content and extract article data.
+ * Orchestrates metadata extraction, URL normalization, transformations,
+ * Readability extraction, and content sanitization.
+ *
+ * @param {string} inputHtml - Raw HTML content
+ * @param {string} [inputUrl=''] - Source URL for resolving relative links
+ * @param {ParserOptions} [parserOptions={}] - Parsing options
+ * @returns {Promise<ArticleData|null>} Extracted article data or null
+ */
 export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
   const pureHtml = purify(inputHtml)
   const meta = extractMetaData(pureHtml)

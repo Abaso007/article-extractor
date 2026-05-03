@@ -11,7 +11,9 @@ function convertDateFormat (dateString) {
 
   let year, month, day
 
-  if (parseInt(parts[0]) > 12) {
+  if (parts[0].length === 4 || parseInt(parts[0]) > 31) {
+    [year, month, day] = parts
+  } else if (parseInt(parts[0]) > 12) {
     [day, month, year] = parts
   } else {
     [month, day, year] = parts

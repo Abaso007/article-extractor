@@ -4,6 +4,12 @@ import { DOMParser } from 'linkedom'
 
 import { findBestMatch } from './similarity.js'
 
+/**
+ * Check if a string is a valid HTTP or HTTPS URL.
+ *
+ * @param {string} [url=''] - URL string to validate
+ * @returns {boolean} True if valid HTTP(S) URL
+ */
 export const isValid = (url = '') => {
   try {
     const ourl = new URL(url)
@@ -13,11 +19,25 @@ export const isValid = (url = '') => {
   }
 }
 
+/**
+ * Pick the URL that best matches the article title using string similarity.
+ *
+ * @param {string[]} [candidates=[]] - Candidate URLs
+ * @param {string} [title=''] - Article title for comparison
+ * @returns {string} Best matching URL
+ */
 export const chooseBestUrl = (candidates = [], title = '') => {
   const ranking = findBestMatch(title, candidates)
   return ranking.bestMatch.target
 }
 
+/**
+ * Resolve a relative URL against a base URL.
+ *
+ * @param {string} [fullUrl=''] - Base URL
+ * @param {string} [relativeUrl=''] - Relative URL to resolve
+ * @returns {string} Absolute URL or empty string on failure
+ */
 export const absolutify = (fullUrl = '', relativeUrl = '') => {
   try {
     const result = new URL(relativeUrl, fullUrl)
@@ -27,6 +47,11 @@ export const absolutify = (fullUrl = '', relativeUrl = '') => {
   }
 }
 
+/**
+ * Tracking and analytics query parameters to strip from URLs.
+ *
+ * @type {string[]}
+ */
 const blacklistKeys = [
   'CNDID',
   '__twitter_impression',
@@ -87,6 +112,12 @@ const blacklistKeys = [
   'pk_campaign',
 ]
 
+/**
+ * Remove tracking parameters and hash fragment from a URL.
+ *
+ * @param {string} url - URL to clean
+ * @returns {string|null} Cleaned URL or null if invalid
+ */
 export const purify = (url) => {
   try {
     const pureUrl = new URL(url)
@@ -106,6 +137,14 @@ export const purify = (url) => {
  * @param url {string}
  * @returns article {string}
  */
+/**
+ * Normalize all links, images, and source elements in HTML
+ * by resolving relative URLs to absolute and adding target=_blank to links.
+ *
+ * @param {string} html - HTML content to normalize
+ * @param {string} url - Base URL for resolving relative paths
+ * @returns {string} Normalized HTML string
+ */
 export const normalize = (html, url) => {
   const doc = new DOMParser().parseFromString(html, 'text/html')
 
@@ -124,9 +163,22 @@ export const normalize = (html, url) => {
     }
   })
 
+  Array.from(doc.getElementsByTagName('source')).forEach((element) => {
+    const src = element.getAttribute('src')
+    if (src) {
+      element.setAttribute('src', absolutify(url, src))
+    }
+  })
+
   return Array.from(doc.childNodes).map(element => element.outerHTML).join('')
 }
 
+/**
+ * Extract the domain from a URL, stripping the www. prefix.
+ *
+ * @param {string} url - Full URL
+ * @returns {string} Domain name
+ */
 export const getDomain = (url) => {
   const host = (new URL(url)).host
   return host.replace('www.', '')
