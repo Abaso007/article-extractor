@@ -16,7 +16,9 @@ yarn.lock
 coverage.lcov
 pnpm-lock.yaml
 lcov.info
-
+bun.lock
 deno.lock
 
 evaluation
+
+.sessions

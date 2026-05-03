@@ -5,7 +5,7 @@ import assert from 'node:assert'
 
 import { readFileSync } from 'node:fs'
 
-import { isString } from '@ndaidong/bellajs'
+import { isString } from '@pwshub/bellajs'
 
 import extractWithReadability, { extractTitleWithReadability } from './extractWithReadability.js'
 

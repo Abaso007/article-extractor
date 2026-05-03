@@ -1,7 +1,16 @@
 // utils -> retrieve
 
-import fetch from 'cross-fetch'
-
+/**
+ * Fetch content through a proxy endpoint.
+ *
+ * @param {string} url - Target URL to fetch
+ * @param {Object} [options={}] - Proxy options
+ * @param {Object} [options.proxy={}] - Proxy configuration
+ * @param {string} options.proxy.target - Proxy endpoint URL
+ * @param {Object} [options.proxy.headers={}] - Headers for proxy request
+ * @param {AbortSignal} [options.signal] - Optional abort signal
+ * @returns {Promise<Response>} Fetch response object
+ */
 const profetch = async (url, options = {}) => {
   const { proxy = {}, signal = null } = options
   const {
@@ -15,6 +24,14 @@ const profetch = async (url, options = {}) => {
   return res
 }
 
+/**
+ * Retrieve raw HTML content from a URL.
+ * Supports direct fetch, proxy, custom headers, agent, and abort signal.
+ *
+ * @param {string} url - URL to fetch
+ * @param {FetchOptions} [options={}] - Fetch configuration
+ * @returns {Promise<ArrayBuffer|null>} Response body as ArrayBuffer
+ */
 export default async (url, options = {}) => {
   const {
     headers = {

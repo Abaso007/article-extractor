@@ -1,8 +1,18 @@
 // utils -> parseFromHtml
 
-import { stripTags, truncate, unique, pipe } from '@ndaidong/bellajs'
+import {
+  stripTags,
+  truncateByChar,
+  unique,
+  pipe,
+  getTTR
+} from '@pwshub/bellajs'
 
-import { purify, cleanify } from './html.js'
+import {
+  purify,
+  cleanify,
+  countImages
+} from './html.js'
 
 import {
   isValid as isValidUrl,
@@ -21,14 +31,32 @@ import extractWithReadability, {
 
 import { execPreParser, execPostParser } from './transformation.js'
 
-import getTimeToRead from './getTimeToRead.js'
-
-const summarize = (desc, txt, threshold, maxlen) => { // eslint-disable-line
+/**
+ * Build article description from meta description or text content.
+ *
+ * @param {Object} params
+ * @param {string} params.desc - Meta description
+ * @param {string} params.text - Stripped text content
+ * @param {number} params.threshold - Min length to use meta description
+ * @param {number} params.maxlen - Max chars for truncated description
+ * @returns {string} Final description string
+ */
+const summarize = ({ desc, text, threshold, maxlen }) => {
   return desc.length > threshold
     ? desc
-    : truncate(txt, maxlen).replace(/\n/g, ' ')
+    : truncateByChar(text, maxlen).replace(/\n/g, ' ')
 }
 
+/**
+ * Parse HTML content and extract article data.
+ * Orchestrates metadata extraction, URL normalization, transformations,
+ * Readability extraction, and content sanitization.
+ *
+ * @param {string} inputHtml - Raw HTML content
+ * @param {string} [inputUrl=''] - Source URL for resolving relative links
+ * @param {ParserOptions} [parserOptions={}] - Parsing options
+ * @returns {Promise<ArticleData|null>} Extracted article data or null
+ */
 export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
   const pureHtml = purify(inputHtml)
   const meta = extractMetaData(pureHtml)
@@ -106,15 +134,17 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
     return null
   }
 
-  const description = summarize(
-    metaDesc,
-    textContent,
-    descriptionLengthThreshold,
-    descriptionTruncateLen
-  )
+  const description = summarize({
+    desc: metaDesc,
+    text: textContent,
+    threshold: descriptionLengthThreshold,
+    maxlen: descriptionTruncateLen,
+  })
 
   const image = metaImg ? absolutifyUrl(bestUrl, metaImg) : ''
   const favicon = metaFav ? absolutifyUrl(bestUrl, metaFav) : ''
+
+  const imgcount = countImages(content)
 
   return {
     url: bestUrl,
@@ -127,7 +157,7 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
     favicon,
     source: getDomain(bestUrl),
     published,
-    ttr: getTimeToRead(textContent, wordsPerMinute),
+    ttr: getTTR(textContent, imgcount, wordsPerMinute),
     type,
   }
 }

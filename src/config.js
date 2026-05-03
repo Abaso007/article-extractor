@@ -1,7 +1,13 @@
 // config.js
 
-import { clone } from '@ndaidong/bellajs'
+import { clone } from '@pwshub/bellajs'
 
+/**
+ * Default sanitize-html options for cleaning extracted article content.
+ * Defines allowed HTML tags, attributes, and iframe domains.
+ *
+ * @type {SanitizeOptions}
+ */
 const sanitizeHtmlOptions = {
   allowedTags: [
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6',
@@ -10,7 +16,7 @@ const sanitizeHtmlOptions = {
     'details', 'summary',
     'pre', 'code',
     'ul', 'ol', 'li', 'dd', 'dl',
-    'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfood',
+    'table', 'th', 'tr', 'td', 'thead', 'tbody', 'tfoot',
     'fieldset', 'legend',
     'figure', 'figcaption', 'img', 'picture',
     'video', 'audio', 'source',
@@ -53,12 +59,20 @@ const sanitizeHtmlOptions = {
 }
 
 /**
- * @returns {SanitizeOptions}
+ * Get a clone of the current sanitize-html options.
+ *
+ * @returns {SanitizeOptions} Cloned sanitize options
  */
 export const getSanitizeHtmlOptions = () => {
   return clone(sanitizeHtmlOptions)
 }
 
+/**
+ * Update sanitize-html options by merging with the current ones.
+ *
+ * @param {SanitizeOptions} [opts={}] - Partial options to merge
+ * @returns {void}
+ */
 export const setSanitizeHtmlOptions = (opts = {}) => {
   Object.keys(opts).forEach((key) => {
     sanitizeHtmlOptions[key] = clone(opts[key])

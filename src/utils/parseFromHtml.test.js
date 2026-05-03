@@ -4,7 +4,7 @@ import assert from 'node:assert'
 
 import { readFileSync } from 'node:fs'
 
-import { isFunction } from '@ndaidong/bellajs'
+import { isFunction } from '@pwshub/bellajs'
 
 import { extractFromHtml as parseFromHtml } from '../main.js'
 import { addTransformations } from './transformation.js'

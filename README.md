@@ -10,16 +10,22 @@ Extract main article, main image and meta data from URL.
 
 ## Demo
 
-- [Give it a try!](https://extractus-demo.vercel.app/article)
+- [Give it a try!](https://extractus.pwshub.com/article)
 
 ## Install
 
 ```bash
-# npm, pnpm, yarn
-npm i @extractus/article-extractor
-
 # bun
 bun add @extractus/article-extractor
+
+# npm
+npm i @extractus/article-extractor
+
+# pnpm
+pnpm install @extractus/article-extractor
+
+# yarn
+yarn add @extractus/article-extractor
 ```
 
 ## Usage
