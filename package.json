@@ -10,6 +10,13 @@
   "author": "@extractus",
   "main": "./src/main.js",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./src/main.js",
+      "default": "./src/main.js"
+    }
+  },
   "types": "./index.d.ts",
   "engines": {
     "node": ">= 20"
