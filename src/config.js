@@ -1,6 +1,6 @@
 // config.js
 
-import { clone } from '@ndaidong/bellajs'
+import { clone } from '@pwshub/bellajs'
 
 const sanitizeHtmlOptions = {
   allowedTags: [

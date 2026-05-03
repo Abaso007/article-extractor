@@ -2,7 +2,7 @@
 
 import { DOMParser } from 'linkedom'
 import sanitize from 'sanitize-html'
-import { pipe } from '@ndaidong/bellajs'
+import { pipe } from '@pwshub/bellajs'
 
 import { getSanitizeHtmlOptions } from '../config.js'
 
@@ -47,4 +47,10 @@ export const cleanify = (inputHtml) => {
     input => stripMultiLinebreaks(input),
     input => stripMultispaces(input)
   )(html)
+}
+
+export const countImages = (html) => {
+  const doc = new DOMParser().parseFromString(html, 'text/html')
+  const imgTags = doc.querySelectorAll('img') || []
+  return imgTags.length
 }

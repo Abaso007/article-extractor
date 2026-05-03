@@ -2,7 +2,7 @@
 
 import {
   isString
-} from '@ndaidong/bellajs'
+} from '@pwshub/bellajs'
 
 import retrieve from './utils/retrieve.js'
 import parseFromHtml from './utils/parseFromHtml.js'

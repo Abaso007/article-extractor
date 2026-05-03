@@ -1,8 +1,18 @@
 // utils -> parseFromHtml
 
-import { stripTags, truncate, unique, pipe } from '@ndaidong/bellajs'
+import {
+  stripTags,
+  truncateByChar,
+  unique,
+  pipe,
+  getTTR
+} from '@pwshub/bellajs'
 
-import { purify, cleanify } from './html.js'
+import {
+  purify,
+  cleanify,
+  countImages
+} from './html.js'
 
 import {
   isValid as isValidUrl,
@@ -21,12 +31,10 @@ import extractWithReadability, {
 
 import { execPreParser, execPostParser } from './transformation.js'
 
-import getTimeToRead from './getTimeToRead.js'
-
-const summarize = (desc, txt, threshold, maxlen) => { // eslint-disable-line
+const summarize = ({ desc, text, threshold, maxlen }) => {
   return desc.length > threshold
     ? desc
-    : truncate(txt, maxlen).replace(/\n/g, ' ')
+    : truncateByChar(text, maxlen).replace(/\n/g, ' ')
 }
 
 export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
@@ -106,15 +114,17 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
     return null
   }
 
-  const description = summarize(
-    metaDesc,
-    textContent,
-    descriptionLengthThreshold,
-    descriptionTruncateLen
-  )
+  const description = summarize({
+    desc: metaDesc,
+    text: textContent,
+    threshold: descriptionLengthThreshold,
+    maxlen: descriptionTruncateLen,
+  })
 
   const image = metaImg ? absolutifyUrl(bestUrl, metaImg) : ''
   const favicon = metaFav ? absolutifyUrl(bestUrl, metaFav) : ''
+
+  const imgcount = countImages(content)
 
   return {
     url: bestUrl,
@@ -127,7 +137,7 @@ export default async (inputHtml, inputUrl = '', parserOptions = {}) => {
     favicon,
     source: getDomain(bestUrl),
     published,
-    ttr: getTimeToRead(textContent, wordsPerMinute),
+    ttr: getTTR(textContent, imgcount, wordsPerMinute),
     type,
   }
 }

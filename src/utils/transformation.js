@@ -1,6 +1,6 @@
 // utils --> transformation.js
 
-import { isArray, isFunction, clone } from '@ndaidong/bellajs'
+import { isArray, isFunction } from '@pwshub/bellajs'
 import { DOMParser } from 'linkedom'
 
 const transformations = []
@@ -40,7 +40,7 @@ export const removeTransformations = (patterns) => {
 }
 
 export const getTransformations = () => {
-  return clone(transformations)
+  return [...transformations]
 }
 
 export const findTransformations = (links) => {
@@ -50,7 +50,9 @@ export const findTransformations = (links) => {
     const { patterns } = transformation
     const matched = urls.some((url) => patterns.some((pattern) => pattern.test(url)))
     if (matched) {
-      tfms.push(clone(transformation))
+      tfms.push({
+        ...transformation,
+      })
     }
   }
   return tfms

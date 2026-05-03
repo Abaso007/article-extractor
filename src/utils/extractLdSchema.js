@@ -1,6 +1,6 @@
 // utils -> extractLdSchema.js
 
-import { isArray, isObject, isString } from '@ndaidong/bellajs'
+import { isArray, isObject, isString } from '@pwshub/bellajs'
 
 const typeSchemas = [
   'aboutpage',
